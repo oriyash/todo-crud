@@ -1,4 +1,4 @@
-FROM node:22 AS builder
+FROM node:lts-slim AS builder
 
 WORKDIR /app
 COPY ./client/package*.json ./
@@ -6,7 +6,7 @@ RUN npm ci
 COPY ./client .
 RUN npm run build
 
-FROM python:3.12
+FROM python:3.12-slim
 
 WORKDIR /app
 COPY --from=builder /app/dist ./bundle

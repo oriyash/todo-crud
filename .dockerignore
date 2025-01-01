@@ -1,4 +1,5 @@
 server/venv
+server/bundle
 
 # Ignore node_modules since dependencies are installed inside the container
 client/node_modules
