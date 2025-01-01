@@ -1,0 +1,32 @@
+services:
+  backend:
+    depends_on:
+      - db
+    container_name: todo-backend
+    build:
+      context: .
+    restart: always
+    network_mode: host
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PSWD: ${DB_PSWD}
+      DB_DBNAME: ${DB_DBNAME}
+    ports:
+      - 8000:8000
+
+  db:
+    container_name: todo-db
+    image: postgres
+    restart: always
+    network_mode: host
+    shm_size: 128mb
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PSWD}
+      POSTGRES_DB: ${DB_DBNAME}

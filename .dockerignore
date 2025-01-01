@@ -1,0 +1,33 @@
+server/venv
+
+# Ignore node_modules since dependencies are installed inside the container
+client/node_modules
+
+# Ignore local build output (these will be created inside the container)
+client/dist
+
+# Ignore configuration and temporary files
+*.log
+*.tmp
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore VCS-related files
+.git
+.gitignore
+
+# Ignore editor-specific files
+.idea
+.vscode
+*.swp
+
+# Ignore other unnecessary files
+tests
+coverage
+docs
