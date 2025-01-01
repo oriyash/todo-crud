@@ -97,3 +97,14 @@ class DB:
         except Exception:
             self._connection.rollback()
             return False
+
+    def delete_all_todos(self):
+        try:
+            cursor = self._connection.cursor()
+            query = "DELETE FROM todos"
+            cursor.execute(query)
+            self._connection.commit()
+            return True
+        except Exception:
+            self._connection.rollback()
+            return False

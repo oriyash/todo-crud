@@ -53,6 +53,13 @@ def toggle_todo(id: int):
     return JSONResponse(new_todo)
 
 
+@router.delete("/delete/all")
+def delete_all_todos():
+    if db.delete_all_todos():
+        return Response(status_code=200)
+    return HTTPException(500, "Could not delete all todos")
+
+
 @router.delete("/delete/{id}")
 def delete_todo(id: int):
     if db.delete_todo_by_id(id):

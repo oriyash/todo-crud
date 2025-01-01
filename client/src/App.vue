@@ -31,12 +31,22 @@ const handleDelete = (id: number, index: number) => {
 };
 
 const handleAdd = (body: string) => {
+    if (currentTodoBody.trim() === "") {
+        return;
+    }
+
     axios
         .post<Todo>("http://localhost:8000/api/todos/insert", { body, done: false })
         .then((res) => {
             todos.value.push(res.data);
             currentTodoBody = "";
         });
+};
+
+const handleClear = () => {
+    axios.delete("http://localhost:8000/api/todos/delete/all").then(() => {
+        todos.value = [];
+    });
 };
 </script>
 
@@ -46,6 +56,8 @@ const handleAdd = (body: string) => {
     <h2 v-if="!todos.length">No todos to show</h2>
     <div v-else>
         <h2>Todos</h2>
+
+        <button @click.prevent="handleClear">Clear All</button>
 
         <p v-for="[index, todo] in todos.entries()" :key="todo.id">
             {{ todo.id }}: {{ todo.body }}, {{ todo.done ? "done" : "not done" }} at
@@ -62,7 +74,11 @@ const handleAdd = (body: string) => {
     <div>
         <h2>Add Todo</h2>
         <form @submit.prevent="() => handleAdd(currentTodoBody)">
-            <textarea v-model="currentTodoBody"></textarea>
+            <input
+                type="text"
+                v-model="currentTodoBody"
+                @keyup.enter="() => handleAdd(currentTodoBody)"
+            />
             <br />
             <button type="submit">submit</button>
         </form>
