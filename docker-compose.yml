@@ -6,7 +6,8 @@ services:
     build:
       context: .
     restart: always
-    network_mode: host
+    networks:
+      - todo-network
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -20,7 +21,8 @@ services:
     container_name: todo-db
     image: postgres
     restart: always
-    network_mode: host
+    networks:
+      - todo-network
     shm_size: 128mb
     ports:
       - 5432:5432
@@ -30,3 +32,8 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PSWD}
       POSTGRES_DB: ${DB_DBNAME}
+
+networks:
+  todo-network:
+    name: todo-network
+    driver: bridge
