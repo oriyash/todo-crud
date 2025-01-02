@@ -31,12 +31,14 @@ const handleDelete = (id: number, index: number) => {
 };
 
 const handleAdd = (body: string) => {
-    if (currentTodoBody.trim() === "") {
+    const cleanBody: string = body.trim();
+
+    if (cleanBody === "") {
         return;
     }
 
     axios
-        .post<Todo>("http://localhost:8000/api/todos/insert", { body, done: false })
+        .post<Todo>("http://localhost:8000/api/todos/insert", { body: cleanBody, done: false })
         .then((res) => {
             todos.value.push(res.data);
             currentTodoBody = "";
