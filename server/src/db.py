@@ -87,6 +87,18 @@ class DB:
             self._connection.rollback()
             return None
 
+    def edit_todo(self, id: int, body: str):
+        try:
+            cursor = self._connection.cursor()
+            query = "UPDATE todos SET body = %s WHERE id=%s RETURNING *;"
+            cursor.execute(query, [body, id])
+            self._connection.commit()
+            return DB.row_to_dict(cursor.fetchone())
+
+        except Exception:
+            self._connection.rollback()
+            return None
+
     def delete_todo_by_id(self, id: int):
         try:
             cursor = self._connection.cursor()

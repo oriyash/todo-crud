@@ -10,7 +10,9 @@ interface Todo {
 }
 
 const todos = ref<Todo[]>([]);
+const editing = ref<number | null>(null);
 let currentTodoBody: string = "";
+let currentEditValue: string = "";
 
 onMounted(() => {
     axios.get<Todo[]>("http://localhost:8000/api/todos/fetch/all").then((res) => {
@@ -50,6 +52,27 @@ const handleClear = () => {
         todos.value = [];
     });
 };
+
+const handleEdit = (id: number, body: string, index: number) => {
+    const cleanBody: string = body.trim();
+
+    if (cleanBody === "") {
+        return;
+    }
+
+    axios
+        .put<Todo>(`http://localhost:8000/api/todos/edit/${id}`, { body: cleanBody })
+        .then((res) => {
+            todos.value.splice(index, 1, res.data);
+            editing.value = null;
+            currentEditValue = "";
+        });
+};
+
+const handleEditClick = (body: string, index: number) => {
+    editing.value = index;
+    currentEditValue = body;
+};
 </script>
 
 <template>
@@ -62,13 +85,27 @@ const handleClear = () => {
         <button @click.prevent="handleClear">Clear All</button>
 
         <p v-for="[index, todo] in todos.entries()" :key="todo.id">
-            {{ todo.id }}: {{ todo.body }}, {{ todo.done ? "done" : "not done" }} at
+            {{ todo.id }}: <span v-if="editing !== index">{{ todo.body }}</span
+            ><input
+                v-else
+                type="text"
+                style="display: inline"
+                v-model="currentEditValue"
+                @keyup.enter="() => handleEdit(todo.id, currentEditValue, index)"
+            />, {{ todo.done ? "done" : "not done" }} at
             {{ todo.created_at }}
             <button @click="() => handleToggle(todo.id, index)" style="display: inline">
                 toggle
             </button>
             <button @click="() => handleDelete(todo.id, index)" style="display: inline">
                 delete
+            </button>
+            <button
+                v-if="editing !== index"
+                style="display: inline"
+                @click.prevent="() => handleEditClick(todo.body, index)"
+            >
+                edit
             </button>
         </p>
     </div>

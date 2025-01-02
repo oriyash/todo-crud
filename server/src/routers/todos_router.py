@@ -13,6 +13,10 @@ class InsertTodoModel(BaseModel):
     done: bool
 
 
+class EditTodoModel(BaseModel):
+    body: str
+
+
 @router.get("/fetch/all")
 def fetch_all_todos():
     todos = db.fetch_all_todos()
@@ -51,6 +55,15 @@ def toggle_todo(id: int):
         return HTTPException(500, "Could not update todo db")
 
     return JSONResponse(new_todo)
+
+
+@router.put("/edit/{id}")
+def edit_todo(id: int, todo: EditTodoModel):
+    new_todo = db.edit_todo(id, todo.body)
+
+    if new_todo is not None:
+        return JSONResponse(new_todo)
+    return HTTPException(500, "Could not edit todo")
 
 
 @router.delete("/delete/all")
