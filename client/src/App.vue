@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import axios from "axios";
-
-interface Todo {
-    id: number;
-    body: string;
-    done: boolean;
-    created_at: string;
-}
+import type { Todo } from "./types/Todo";
 
 const todos = ref<Todo[]>([]);
 const editing = ref<number | null>(null);
