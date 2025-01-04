@@ -9,7 +9,7 @@ services:
     networks:
       - todo-network
     environment:
-      DB_HOST: ${DB_HOST}
+      DB_HOST: todo-db
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       DB_PSWD: ${DB_PSWD}
