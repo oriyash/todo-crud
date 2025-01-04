@@ -85,7 +85,13 @@ const handleEditClick = (body: string, index: number) => {
         <button @click.prevent="handleClear">Clear All</button>
 
         <p v-for="[index, todo] in todos.entries()" :key="todo.id">
-            {{ todo.id }}: <span v-if="editing !== index">{{ todo.body }}, </span
+            <input
+                type="checkbox"
+                style="display: inline"
+                v-model="todo.done"
+                @change.prevent="() => handleToggle(todo.id, index)"
+            />
+            {{ todo.id }}: <span v-if="editing !== index">{{ todo.body }} - </span
             ><input
                 v-else
                 type="text"
@@ -93,11 +99,8 @@ const handleEditClick = (body: string, index: number) => {
                 v-model="currentEditValue"
                 @keyup.enter="() => handleEdit(todo.id, currentEditValue, index)"
             />
-            {{ todo.done ? "done" : "not done" }} at
+            created at
             {{ todo.created_at }}
-            <button @click="() => handleToggle(todo.id, index)" style="display: inline">
-                toggle
-            </button>
             <button @click="() => handleDelete(todo.id, index)" style="display: inline">
                 delete
             </button>
