@@ -1,0 +1,18 @@
+services:
+  backend:
+    depends_on:
+      - db
+    container_name: todo-backend
+    build:
+      context: .
+    restart: always
+    networks:
+      - todo-network
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PSWD: ${DB_PSWD}
+      DB_DBNAME: ${DB_DBNAME}
+    ports:
+      - 8000:8000
