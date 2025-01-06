@@ -33,12 +33,10 @@ const handleAdd = (body: string) => {
         return;
     }
 
-    axios
-        .post<Todo>("/api/todos/insert", { body: cleanBody, done: false })
-        .then((res) => {
-            todos.value.push(res.data);
-            currentTodoBody = "";
-        });
+    axios.post<Todo>("/api/todos/insert", { body: cleanBody, done: false }).then((res) => {
+        todos.value.push(res.data);
+        currentTodoBody = "";
+    });
 };
 
 const handleClear = () => {
@@ -54,13 +52,11 @@ const handleEdit = (id: number, body: string, index: number) => {
         return;
     }
 
-    axios
-        .put<Todo>(`/api/todos/edit/${id}`, { body: cleanBody })
-        .then((res) => {
-            todos.value.splice(index, 1, res.data);
-            editing.value = null;
-            currentEditValue = "";
-        });
+    axios.put<Todo>(`/api/todos/edit/${id}`, { body: cleanBody }).then((res) => {
+        todos.value.splice(index, 1, res.data);
+        editing.value = null;
+        currentEditValue = "";
+    });
 };
 
 const handleEditClick = (body: string, index: number) => {
@@ -95,7 +91,11 @@ const handleEditClick = (body: string, index: number) => {
             />
             created at
             {{ todo.created_at }}
-            <button @click="() => handleDelete(todo.id, index)" style="display: inline">
+            <button
+                v-if="editing !== index"
+                @click="() => handleDelete(todo.id, index)"
+                style="display: inline"
+            >
                 delete
             </button>
             <button
