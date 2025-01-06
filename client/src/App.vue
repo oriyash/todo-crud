@@ -9,19 +9,19 @@ let currentTodoBody: string = "";
 let currentEditValue: string = "";
 
 onMounted(() => {
-    axios.get<Todo[]>("http://localhost:8000/api/todos/fetch/all").then((res) => {
+    axios.get<Todo[]>("/api/todos/fetch/all").then((res) => {
         todos.value.push(...res.data);
     });
 });
 
 const handleToggle = (id: number, index: number) => {
-    axios.put<Todo>(`http://localhost:8000/api/todos/toggle/${id}`).then((res) => {
+    axios.put<Todo>(`/api/todos/toggle/${id}`).then((res) => {
         todos.value.splice(index, 1, res.data);
     });
 };
 
 const handleDelete = (id: number, index: number) => {
-    axios.delete(`http://localhost:8000/api/todos/delete/${id}`).then(() => {
+    axios.delete(`/api/todos/delete/${id}`).then(() => {
         todos.value.splice(index, 1);
     });
 };
@@ -34,7 +34,7 @@ const handleAdd = (body: string) => {
     }
 
     axios
-        .post<Todo>("http://localhost:8000/api/todos/insert", { body: cleanBody, done: false })
+        .post<Todo>("/api/todos/insert", { body: cleanBody, done: false })
         .then((res) => {
             todos.value.push(res.data);
             currentTodoBody = "";
@@ -42,7 +42,7 @@ const handleAdd = (body: string) => {
 };
 
 const handleClear = () => {
-    axios.delete("http://localhost:8000/api/todos/delete/all").then(() => {
+    axios.delete("/api/todos/delete/all").then(() => {
         todos.value = [];
     });
 };
@@ -55,7 +55,7 @@ const handleEdit = (id: number, body: string, index: number) => {
     }
 
     axios
-        .put<Todo>(`http://localhost:8000/api/todos/edit/${id}`, { body: cleanBody })
+        .put<Todo>(`/api/todos/edit/${id}`, { body: cleanBody })
         .then((res) => {
             todos.value.splice(index, 1, res.data);
             editing.value = null;
