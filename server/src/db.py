@@ -71,7 +71,7 @@ class DB:
 
     def fetch_all_todos(self):
         cursor = self._connection.cursor()
-        query = "SELECT * FROM todos;"
+        query = "SELECT * FROM todos ORDER BY id;"
         cursor.execute(query)
         return list(map(DB.row_to_dict, cursor.fetchall()))
 
