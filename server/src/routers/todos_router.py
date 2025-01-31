@@ -79,3 +79,13 @@ def delete_todo(id: int):
         return Response(status_code=200)
 
     return HTTPException(500, "Could not delete todo from db")
+
+
+@router.get("/fetch/deleted/all")
+def fetch_all_deleted():
+    deleted_todos = db.fetch_all_deleted()
+
+    if deleted_todos is None:
+        return HTTPException(500, "Could not fetch dleted todos")
+
+    return JSONResponse(deleted_todos)

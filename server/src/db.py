@@ -1,9 +1,6 @@
 import os
 
 import psycopg2
-from dotenv import load_dotenv
-
-load_dotenv("../.env")
 
 
 class DB:
@@ -43,7 +40,8 @@ class DB:
                     id SERIAL PRIMARY KEY, 
                     body TEXT NOT NULL,
                     done BOOLEAN NOT NULL, 
-                    created_at timestamp NOT NULL DEFAULT NOW()
+                    created_at timestamp NOT NULL DEFAULT NOW(),
+                    deleted_at timestamp default NULL
                 );"""
 
             cursor.execute(query)
@@ -71,7 +69,7 @@ class DB:
 
     def fetch_all_todos(self):
         cursor = self._connection.cursor()
-        query = "SELECT * FROM todos ORDER BY id;"
+        query = "SELECT * FROM todos WHERE deleted_at is NULL ORDER BY id;"
         cursor.execute(query)
         return list(map(DB.row_to_dict, cursor.fetchall()))
 
@@ -102,7 +100,7 @@ class DB:
     def delete_todo_by_id(self, id: int):
         try:
             cursor = self._connection.cursor()
-            query = "DELETE FROM todos WHERE id=%s"
+            query = "UPDATE todos SET deleted_at = NOW() WHERE id = %s"
             cursor.execute(query, [id])
             self._connection.commit()
             return True
@@ -113,8 +111,30 @@ class DB:
     def delete_all_todos(self):
         try:
             cursor = self._connection.cursor()
-            query = "DELETE FROM todos"
+            query = "UPDATE todos SET deleted_at = NOW()"
             cursor.execute(query)
+            self._connection.commit()
+            return True
+        except Exception:
+            self._connection.rollback()
+            return False
+
+    def fetch_all_deleted(self):
+        try:
+            cursor = self._connection.cursor()
+            query = "SELECT * FROM todos WHERE deleted_at IS NOT NULL"
+            cursor.execute(query)
+            self._connection.commit()
+            return list(map(DB.row_to_dict, cursor.fetchall()))
+        except Exception:
+            self._connection.rollback()
+            return None
+
+    def purge_deleted(self, ids: list[int]):
+        try:
+            cursor = self._connection.cursor()
+            query = "DELETE FROM todos WHERE id IN %s"
+            cursor.execute(query, [ids])
             self._connection.commit()
             return True
         except Exception:
